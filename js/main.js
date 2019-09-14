@@ -74,6 +74,5 @@
         $(thisAlert).find('.btn-hide-validate').remove();
     }
     
-    
 
 })(jQuery);
