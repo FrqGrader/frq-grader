@@ -25,7 +25,14 @@ class IBApi(object):
 
     def _get_header(self):
         return {'Authorization': 'Bearer {}'.format(self.api_key)}
-
+    def compute_Weights(self, ):
+        url = HOST + 'api/v1/cluster/compute_weights'
+        api_args = {"repo_name": "GraderWorkspace", "repo_owner": "jsu", "root_dir": "fs/Instabase%20Drive/Grading/output"}
+        headers = self._get_header()
+        headers['Instabase-API-Args'] = json.dumps(api_args)
+        r = requests.get(url, headers=headers)
+        resp = json.loads(r.headers['Instabase-API-Resp'])
+        
     def read_file(self, location):
         url = HOST + DRIVE_API + u'/' + location.lstrip(u'/')
         api_args = dict(type='file', get_content=True, range='bytes=0--1')
@@ -77,7 +84,6 @@ class NLPApi(object):
 
     def _get_header(self):
         return {'Authorization': 'Bearer {}'.format(self.api_key)}
-
     def poll_until_finished(self, job_id, timeout=20):
         start = time.time()
         while True:
@@ -159,3 +165,16 @@ class NLPApi(object):
         resp = requests.post(url, json=form, headers=self._get_header()).json()
         results = self.poll_until_finished(resp['job_id'], timeout=1000)
         return results
+
+
+#Begin Script
+f = open("input.txt")
+content = f.readlines()
+passedString = ""
+for it in content:
+    passedString = passedString + it.rstrip()+" "
+API = IBApi("vRyWDppiZbL7Tf1OphvabTvuGfZnmk")
+API.save_file("jsu/GraderWorkspace/fs/Instabase%20Drive/Grading/input/temp", passedString, 'txt')
+f.close()
+answerKey = API.read_file("jsu/GraderWorkspace/fs/Instabase%20Drive/Grading/input/answer")
+
