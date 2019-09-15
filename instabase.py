@@ -25,13 +25,16 @@ class IBApi(object):
 
     def _get_header(self):
         return {'Authorization': 'Bearer {}'.format(self.api_key)}
-    def compute_Weights(self, ):
+    def compute_Weights(self):
         url = HOST + 'api/v1/cluster/compute_weights'
-        api_args = {"repo_name": "GraderWorkspace", "repo_owner": "jsu", "root_dir": "fs/Instabase%20Drive/Grading/output"}
+        api_args = {"repo_name": "GraderWorkspace", "repo_owner": "jsu", "root_dir": "fs/Instabase%20Drive/Grading/input"}
         headers = self._get_header()
         headers['Instabase-API-Args'] = json.dumps(api_args)
         r = requests.get(url, headers=headers)
         resp = json.loads(r.headers['Instabase-API-Resp'])
+        
+        weights = read_file("jsu/GraderWorkspace/fs/Instabase%20Drive/Grading/input/weights.json")
+        return weights
         
     def read_file(self, location):
         url = HOST + DRIVE_API + u'/' + location.lstrip(u'/')
